@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "gitsigns.nvim": {
+      "rev": "f2421c550618d257048afa650413d9e542ddbe67",
+      "src": "https://github.com/lewis6991/gitsigns.nvim"
+    },
     "gruvbox": {
       "rev": "7fde9c10ceff684529c1646bf759af3a25bb576c",
       "src": "https://github.com/morhetz/gruvbox",
@@ -24,6 +28,14 @@
     "mini.pick": {
       "rev": "360c1bb33610e030698d07ed15969ab4762dbcd6",
       "src": "https://github.com/echasnovski/mini.pick"
+    },
+    "nvim-treesitter": {
+      "rev": "de9f0f3dbdab1952f136dc7bd67ff3bafdf994da",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+    },
+    "render-markdown.nvim": {
+      "rev": "4663eb3ecd538bd5062628fb6d95bbe6bdca78f6",
+      "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     }
   }
 }

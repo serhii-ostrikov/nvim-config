@@ -11,21 +11,36 @@ vim.pack.add({
 	{ src = 'https://github.com/echasnovski/mini.extra' },
 	{ src = 'https://github.com/echasnovski/mini.icons' },
 	{ src = 'https://github.com/echasnovski/mini.files' },
-	{ src = 'https://github.com/echasnovski/mini.diff' },
+	{ src = 'https://github.com/lewis6991/gitsigns.nvim' },
+	{ src = 'https://github.com/nvim-treesitter/nvim-treesitter' },
+	{ src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim' },
 })
 
 require('mini.icons').setup()
 require('mini.pick').setup()
 require('mini.extra').setup()
 require('mini.files').setup()
-require('mini.diff').setup()
+require('gitsigns').setup()
+
+require('nvim-treesitter').install({ 'markdown', 'markdown_inline' })
+vim.api.nvim_create_autocmd('FileType', {
+	pattern = 'markdown',
+	callback = function() vim.treesitter.start() end,
+})
+require('render-markdown').setup({})
 
 vim.keymap.set('n', ']c', function()
-	MiniDiff.goto_hunk('next')
-end) -- next git change
+	require('gitsigns').nav_hunk('next', { target = 'unstaged' })
+end) -- next git change (staged or not)
 vim.keymap.set('n', '[c', function()
-	MiniDiff.goto_hunk('prev')
-end) -- previous git change
+	require('gitsigns').nav_hunk('prev', { target = 'unstaged' })
+end) -- previous git change (staged or not)
+vim.keymap.set('n', ']C', function()
+	require('gitsigns').nav_hunk('next', { target = 'staged' })
+end) -- next staged git change
+vim.keymap.set('n', '[C', function()
+	require('gitsigns').nav_hunk('prev', { target = 'staged' })
+end) -- previous staged git change
 
 vim.o.background = "light"
 -- vim.cmd.colorscheme("gruvbox")
