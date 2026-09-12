@@ -31,16 +31,30 @@ require('render-markdown').setup({})
 
 vim.keymap.set('n', ']c', function()
 	require('gitsigns').nav_hunk('next', { target = 'unstaged' })
-end) -- next git change (staged or not)
+end) -- next unstaged git change
 vim.keymap.set('n', '[c', function()
 	require('gitsigns').nav_hunk('prev', { target = 'unstaged' })
-end) -- previous git change (staged or not)
+end) -- previous unstaged git change
 vim.keymap.set('n', ']C', function()
 	require('gitsigns').nav_hunk('next', { target = 'staged' })
 end) -- next staged git change
 vim.keymap.set('n', '[C', function()
 	require('gitsigns').nav_hunk('prev', { target = 'staged' })
 end) -- previous staged git change
+
+vim.keymap.set('n', '<leader>v', function()
+	require('gitsigns').preview_hunk()
+end) -- view git diff for hunk under cursor
+vim.keymap.set('n', '<leader>r', function()
+	require('gitsigns').reset_hunk()
+end) -- revert (discard) hunk under cursor
+
+vim.keymap.set('n', '<leader>a', function()
+	require('gitsigns').stage_hunk()
+end) -- toggle stage/unstage for hunk under cursor
+vim.keymap.set('v', '<leader>a', function()
+	require('gitsigns').stage_hunk({ vim.fn.line('.'), vim.fn.line('v') })
+end) -- toggle stage/unstage for only the selected lines
 
 vim.o.background = "light"
 -- vim.cmd.colorscheme("gruvbox")
