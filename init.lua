@@ -62,7 +62,17 @@ vim.o.background = "light"
 vim.lsp.config['zig'] = {
 	cmd = { 'zls' },
 	filetypes = { 'zig', 'zon' },
-	root_markers = { 'build.zig' }
+	root_markers = { 'build.zig' },
+	settings = {
+		zls = {
+			enable_inlay_hints = true,
+			inlay_hints_show_variable_type_hints = true, -- `const a = 5` -> `: comptime_int`
+			inlay_hints_show_parameter_name = true, -- param names at call sites
+			inlay_hints_show_builtin = true, -- param names for @builtins
+			inlay_hints_exclude_single_argument = true,
+			inlay_hints_hide_redundant_param_names = true,
+		},
+	},
 }
 vim.lsp.enable('zig')
 
@@ -79,6 +89,25 @@ vim.lsp.config['terraform'] = {
 	root_markers = { '.terraform', '.git' }
 }
 vim.lsp.enable('terraform')
+
+vim.lsp.config['gopls'] = {
+	cmd = { 'gopls' },
+	filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+	root_markers = { 'go.work', 'go.mod', '.git' }
+}
+vim.lsp.enable('gopls')
+
+vim.lsp.config['ts_ls'] = {
+	cmd = { 'typescript-language-server', '--stdio' },
+	filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' },
+	root_markers = { 'tsconfig.json', 'jsconfig.json', 'package.json', '.git' },
+	init_options = {
+		-- workspaces don't have `node_modules` installed (private registry auth) and the
+		-- global `typescript` is v7 (no tsserver.js), so point at a standalone install
+		tsserver = { path = vim.fn.expand('~/.local/share/nvim/tsserver/node_modules/typescript/lib/tsserver.js') }
+	}
+}
+vim.lsp.enable('ts_ls')
 
 vim.opt.completeopt = { 'menuone', 'noinsert', 'popup' }
 vim.o.ignorecase = true
@@ -117,7 +146,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
 	callback = function(args)
 		vim.lsp.completion.enable(true, args.data.client_id, args.buf)
 
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		if client and client:supports_method('textDocument/inlayHint') then
+			vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+		end
+
 		local opts = { buffer = args.buf }
+		vim.keymap.set('n', '<leader>i', function()
+			vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }),
+				{ bufnr = args.buf })
+		end, opts)                                            -- toggle inlay hints
 		vim.keymap.set('n', '<leader>d', vim.lsp.buf.definition, opts) -- go to definition
 		vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts) -- go to type definition
 		vim.keymap.set('n', '<leader>h', vim.lsp.buf.signature_help, opts) -- show function signature help
