@@ -142,6 +142,9 @@ end)                                     -- fuzzy-find files by name
 
 vim.keymap.set('n', '-', MiniFiles.open) -- open file explorer at current file's directory
 
+vim.keymap.set('n', '<C-i>', '<C-o>') -- jump back in jumplist (swapped)
+vim.keymap.set('n', '<C-o>', '<C-i>') -- jump forward in jumplist (swapped)
+
 vim.api.nvim_create_autocmd('LspAttach', {
 	callback = function(args)
 		vim.lsp.completion.enable(true, args.data.client_id, args.buf)
